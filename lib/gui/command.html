@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>总控协作 · CCF-A 作战室</title>
+  <link rel="stylesheet" href="./app.css" />
+  <link rel="stylesheet" href="./command.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">◈</span>
+      <div>
+        <h1>总控协作</h1>
+        <p class="sub">Claude 总控裁决 · DeepSeek / ChatGPT 执行汇报</p>
+      </div>
+    </div>
+    <div class="lanes" id="lanes"></div>
+    <div class="top-actions">
+      <a class="navlink" href="./">← 三模型圆桌</a>
+    </div>
+  </header>
+
+  <main class="cmd-main">
+    <aside class="left">
+      <div class="card">
+        <h2>会话</h2>
+        <button id="newBtn" class="primary wide">＋ 新建会话</button>
+        <ul id="sessionList" class="runlist"></ul>
+      </div>
+
+      <form id="ctxForm" class="card">
+        <h2>研究背景（新建会话时生效）</h2>
+        <label>会话标题 <input id="title" placeholder="如 算法比较 · 实验设计" /></label>
+        <div class="row2">
+          <label>目标会议 <select id="venue"></select></label>
+          <label>截止 <input id="deadline" placeholder="2027-01-xx" /></label>
+        </div>
+        <label>领域 <input id="field" placeholder="如 计算机视觉" /></label>
+        <label>资源约束 <input id="constraints" placeholder="如 4×A100、单人、2 个月" /></label>
+        <label>研究背景 / 当前进展 <textarea id="background" rows="4" placeholder="问题、方法、已有结果……"></textarea></label>
+        <label>本地材料路径（每行一个，家目录内文本文件，如 .md/.py/.tex）
+          <textarea id="materials" rows="3" placeholder="/path/to/approved-materials.md"></textarea>
+        </label>
+      </form>
+
+      <div class="card">
+        <h2>协作设置</h2>
+        <label class="inline"><input type="checkbox" id="wDeepseek" checked /> DeepSeek 执行</label>
+        <label class="inline"><input type="checkbox" id="wChatgpt" checked /> ChatGPT 执行</label>
+        <label class="inline"><input type="checkbox" id="cross" checked /> 空闲时互审</label>
+        <label class="inline"><input type="checkbox" id="debate" checked /> 分歧相互说服（证据可查证，主持人终裁）</label>
+        <label class="inline"><input type="checkbox" id="oral" checked /> 贡献评审（3 模型 × 10 轮，≥24/30 合格）</label>
+        <label class="inline"><input type="checkbox" id="autopilot" /> 自动续航（Claude 自己决定下一回合）</label>
+        <label>每人任务步数 <select id="maxSteps"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>6</option></select></label>
+        <p class="dim tiny">自动续航不设回合上限：每回合结束由主持人 Claude 对照论文完整度判断继续 / 收敛 / 完成 / 需要你。</p>
+        <label>每个任务最多打回 <select id="maxRevise"><option value="0">0</option><option value="1" selected>1</option><option value="2">2</option></select></label>
+        <p class="dim tiny">流水线：执行者做完就上交、立即取下一个任务；没任务时去互审对方。Claude 随到随裁，裁决与常设指令写进公告板，所有 Agent 都会读到。</p>
+        <p class="dim tiny" id="apNote"></p>
+        <button type="button" id="apToggle" class="ghost wide">开启自动续航</button>
+      </div>
+
+      <div class="card">
+        <h2>用量余额 · 上下文 <button type="button" id="usageRefresh" class="ghost mini">刷新</button></h2>
+        <div id="usageBox"><p class="dim tiny">读取中…</p></div>
+      </div>
+
+      <div class="card">
+        <h2>经验手册</h2>
+        <p class="dim tiny" id="kbInfo">读取中…</p>
+        <button type="button" id="kbRebuild" class="ghost wide">让 Claude 重读经验库</button>
+      </div>
+    </aside>
+
+    <section class="center">
+      <div class="center-head">
+        <div>
+          <h2 id="sessionTitle">选择或新建一个会话</h2>
+          <p id="sessionMeta" class="sub"></p>
+          <div id="ccfaBar" class="ccfa"></div>
+        </div>
+        <div class="phase-steps" id="phaseSteps"></div>
+      </div>
+      <div id="feed" class="transcript">
+        <div class="empty">
+          <p>在下方输入问题，Claude 会先拆解派活，DeepSeek 与 ChatGPT 并行执行并互审，</p>
+          <p>Claude 逐条采纳/驳回、必要时打回重做，最后给你一份综合答复。可以连续追问。</p>
+        </div>
+      </div>
+      <form id="composer" class="composer">
+        <div class="tpl-row" id="tplRow"></div>
+        <div class="composer-row">
+          <textarea id="msg" rows="3" placeholder="例：帮我判断这个主问题的最近邻工作有哪些，新颖性站不站得住？（⌘/Ctrl+Enter 发送）"></textarea>
+          <div class="composer-btns">
+            <button type="submit" id="sendBtn" class="primary">发送</button>
+            <button type="button" id="stopBtn" class="ghost" disabled>停止</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="right">
+      <div class="tabs">
+        <button class="tab active" data-tab="final">综合答复</button>
+        <button class="tab" data-tab="mission">科研目标</button>
+        <button class="tab" data-tab="mainline">主线</button>
+        <button class="tab" data-tab="board">公告板</button>
+        <button class="tab" data-tab="memory">记忆·反馈</button>
+        <button class="tab" data-tab="oral">贡献评审</button>
+        <button class="tab" data-tab="status">问状态</button>
+        <button class="tab" data-tab="kb">手册</button>
+        <button class="tab" data-tab="events">事件</button>
+      </div>
+      <div class="tabbody" id="tabbody"><p class="dim">回合完成后在这里显示。</p></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <script src="./command.js"></script>
+</body>
+</html>

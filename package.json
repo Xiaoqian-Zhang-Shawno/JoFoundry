@@ -1,0 +1,44 @@
+{
+  "name": "research-foundry",
+  "version": "0.1.0",
+  "description": "Local multi-model research collaboration with a controller, workers, review and persistent memory",
+  "private": true,
+  "type": "module",
+  "main": "./lib/index.js",
+  "bin": {
+    "foundry": "./lib/cli.mjs"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "probe": "node lib/cli.mjs probe",
+    "mock": "FOUNDRY_MOCK=1 node lib/cli.mjs run --topic \"测试主题\"",
+    "start": "node lib/server.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check:privacy": "node scripts/check-privacy.mjs"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-tools": ">=0.1.0-rc <2",
+    "cordis": ">=4.0.0-rc <5"
+  },
+  "dsh": {
+    "plugin": {
+      "id": "research-foundry",
+      "displayName": "科研灵感工坊",
+      "description": "三个模型（DeepSeek / Claude Opus 5.5 / ChatGPT）并行发散 → 盲评互撕 → 综合成可开工选题"
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-tools": {
+      "optional": true
+    },
+    "cordis": {
+      "optional": true
+    }
+  }
+}

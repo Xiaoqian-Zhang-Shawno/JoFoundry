@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>三模型圆桌 · CCF-A 作战室</title>
+  <link rel="stylesheet" href="./app.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">◎</span>
+      <div>
+        <h1>三模型圆桌</h1>
+        <p class="sub">CCF-A 选题 · 模拟审稿 · 作战计划</p>
+      </div>
+    </div>
+    <div class="lanes" id="lanes"></div>
+    <div class="top-actions">
+      <a href="./command" style="color:var(--accent);text-decoration:none;font-size:13px">总控协作 →</a>
+      <button id="probeBtn" class="ghost">探测线路</button>
+      <span id="cfgPath" class="cfgpath"></span>
+    </div>
+  </header>
+
+  <main>
+    <aside class="left">
+      <form id="runForm" class="card">
+        <h2>发起一场圆桌</h2>
+        <label>研究方向 / 论文想法 <span class="req">*</span>
+          <textarea id="topic" rows="3" placeholder="例：把 diffusion 的采样步数压到 4 步以内，同时保证 FID 不掉；想在 CVPR 投出去"></textarea>
+        </label>
+        <div class="row2">
+          <label>目标会议
+            <select id="venue">
+              <option value="neurips">NeurIPS</option>
+              <option value="icml">ICML</option>
+              <option value="iclr">ICLR</option>
+              <option value="cvpr">CVPR</option>
+              <option value="iccv">ICCV</option>
+              <option value="acl">ACL</option>
+              <option value="emnlp">EMNLP</option>
+              <option value="aaai">AAAI</option>
+              <option value="ijcai">IJCAI</option>
+              <option value="kdd">KDD</option>
+              <option value="sigir">SIGIR</option>
+              <option value="osdi">OSDI</option>
+              <option value="sosp">SOSP</option>
+              <option value="nsdi">NSDI</option>
+              <option value="ccs">CCS</option>
+              <option value="usenixsec">USENIX Security</option>
+              <option value="icse">ICSE</option>
+              <option value="generic">其它 CCF-A</option>
+            </select>
+          </label>
+          <label>模式
+            <select id="mode">
+              <option value="paper">圆桌 + 模拟审稿</option>
+              <option value="ideate">发散 + 盲评找 idea</option>
+            </select>
+          </label>
+        </div>
+        <label>领域 <input id="field" placeholder="如 生成模型 / 系统 / 安全" /></label>
+        <label>资源约束 <input id="constraints" placeholder="如 1 张 A100、3 个月、单人" /></label>
+        <label>截止时间 <input id="deadline" placeholder="如 2027-05-20" /></label>
+        <label>已有材料（前期结果/数据/文献）<textarea id="anchors" rows="2" placeholder="粘贴摘要或关键发现，可留空"></textarea></label>
+        <div class="form-actions">
+          <button type="submit" id="startBtn" class="primary">开始讨论</button>
+          <button type="button" id="cancelBtn" class="ghost" disabled>停止</button>
+        </div>
+        <p id="formMsg" class="msg"></p>
+      </form>
+
+      <div class="card">
+        <h2>历史与会话</h2>
+        <ul id="runList" class="runlist"></ul>
+      </div>
+    </aside>
+
+    <section class="center">
+      <div class="center-head">
+        <div>
+          <h2 id="sessionTitle">还没有进行中的圆桌</h2>
+          <p id="sessionMeta" class="sub"></p>
+        </div>
+        <div class="phase-steps" id="phaseSteps"></div>
+      </div>
+      <div id="transcript" class="transcript">
+        <div class="empty">
+          <p>左侧填一个方向，点「开始讨论」。</p>
+          <p class="dim">三个模型会依次发言、互相反驳，再各自扮演一种审稿人给你挑刺，最后输出投稿作战计划。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="right">
+      <div class="tabs">
+        <button class="tab active" data-tab="plan">作战计划</button>
+        <button class="tab" data-tab="reviews">模拟审稿</button>
+        <button class="tab" data-tab="brief">问题陈述</button>
+        <button class="tab" data-tab="events">事件</button>
+      </div>
+      <div class="tabbody" id="tabbody"><p class="dim">讨论结束后在这里生成。</p></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <script src="./app.js"></script>
+</body>
+</html>

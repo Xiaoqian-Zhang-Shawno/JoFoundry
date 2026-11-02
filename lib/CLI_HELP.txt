@@ -1,0 +1,13 @@
+dsh-research-foundry — 三模型科研灵感工坊
+
+用法：
+  node lib/cli.mjs init                      写入默认配置
+  node lib/cli.mjs probe                     探查三条模型线路
+  node lib/cli.mjs run --topic "..."         跑一轮完整协议
+       可选：--field 领域 --constraints "..." --anchors ./refs.md --goal "..." --lead claude
+  node lib/cli.mjs list                      列出历史运行
+  node lib/cli.mjs show <runId> [--file seeds.md]
+
+环境变量：
+  FOUNDRY_MOCK=1   全流程离线（不调用任何模型，用于验证管线）
+  FOUNDRY_HOME     配置、记忆与运行数据根目录（默认 ~/.dsh/research-foundry）
