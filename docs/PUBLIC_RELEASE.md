@@ -28,3 +28,15 @@ Validation performed on release copy:
 - Real model calls and optional DSH integration were not exercised.
 
 Commit identity uses a GitHub noreply address; no original runtime data or prior Git history is included.
+
+## 0.2.0 — configurable model roster
+
+The controller, workers and reviewers now use arbitrary configured lane IDs. Defaults are two generic roles with no preset endpoint or model. OpenAI-compatible Chat Completions, Anthropic-compatible Messages and optional Codex CLI are transport choices, independent of roles. Legacy provider IDs remain compatible when explicitly configured.
+
+The UI and review thresholds follow the actual roster. Review caches include the reviewer models/endpoints and settings. Incomplete reviews cannot pass. A full custom roster replaces the defaults; keep legacy IDs for existing sessions or start a new session after changing the roster.
+
+Validation: eight offline regression tests, including 2/3/4 participants and custom IDs, controller routing, dispute resolution, dynamic review thresholds/cache isolation and a stubbed generic HTTP request. A browser smoke with four named example participants completed a mock round and displayed the expected 4-by-2 review grid without console errors. No live provider capability or quality claim is inferred from mock tests. The running private installation was not modified.
+
+The source installation's subsequent UI update was merged by a three-way comparison against the initial source export: collapsible rounds, older-round grouping, process visibility, latest-round controls and follow-latest behavior are retained alongside the configurable roster. Source installation files remain untouched.
+
+Browser verification also reproduced and fixed a lazy-history issue: opening an older-round group in an idle session left it empty because no polling redraw occurred. The group now renders its children immediately; detached toggle events are ignored.

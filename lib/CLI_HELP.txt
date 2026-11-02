@@ -1,10 +1,10 @@
-dsh-research-foundry — 三模型科研灵感工坊
+dsh-research-foundry — 多模型科研灵感工坊
 
 用法：
   node lib/cli.mjs init                      写入默认配置
-  node lib/cli.mjs probe                     探查三条模型线路
+  node lib/cli.mjs probe                     探查配置的模型线路
   node lib/cli.mjs run --topic "..."         跑一轮完整协议
-       可选：--field 领域 --constraints "..." --anchors ./refs.md --goal "..." --lead claude
+       可选：--field 领域 --constraints "..." --anchors ./refs.md --goal "..." --lead <线路ID>
   node lib/cli.mjs list                      列出历史运行
   node lib/cli.mjs show <runId> [--file seeds.md]
 

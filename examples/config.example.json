@@ -1,0 +1,39 @@
+{
+  "lanes": {
+    "planner": {
+      "kind": "openai",
+      "label": "总控模型",
+      "baseUrl": "http://localhost:1234/v1",
+      "model": "YOUR_MODEL_ID",
+      "apiKeyEnv": "PLANNER_API_KEY"
+    },
+    "solver": {
+      "kind": "openai",
+      "label": "执行模型",
+      "baseUrl": "http://localhost:1234/v1",
+      "model": "YOUR_MODEL_ID",
+      "apiKeyEnv": "SOLVER_API_KEY",
+      "strengths": "实现与误差分析"
+    },
+    "checker": {
+      "kind": "anthropic",
+      "label": "核验模型",
+      "enabled": false,
+      "baseUrl": "https://api.anthropic.com",
+      "model": "YOUR_MODEL_ID",
+      "apiKeyEnv": "CHECKER_API_KEY"
+    }
+  },
+  "protocol": {
+    "controller": "planner",
+    "workers": [
+      "solver"
+    ],
+    "reviewers": [
+      "planner",
+      "solver"
+    ],
+    "reviewRounds": 2,
+    "reviewPassRatio": 0.8
+  }
+}

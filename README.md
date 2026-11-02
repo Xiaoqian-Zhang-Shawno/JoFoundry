@@ -1,6 +1,6 @@
 # Research Foundry · 总控协作
 
-本地运行的多模型科研协作工具：Claude 担任总控，DeepSeek 和 Codex 担任执行者，围绕用户的问题派工、互审、裁决并综合结果。
+本地运行的多模型科研协作工具。总控、执行者和评审者均可自由配置，不绑定特定厂商、模型名称或三个参与者；同一个模型也可以承担不同角色。
 
 总控协作页面：`http://127.0.0.1:8787/.research-foundry/command`。
 
@@ -8,6 +8,7 @@
 
 - 总控把目标拆成任务，执行者交付后逐份裁决、修订或接续。
 - 会话公告板、阶段反馈和长期记忆帮助多轮工作保持连贯。
+- 回合折叠、历史分组、显示过程、只看最新与自动跟随控制长会话阅读。
 - 分歧讨论保留证据核验状态；模型评审结果按贡献版本缓存。
 - 可选自动续航；会话、调用记录和产物保存在本地运行目录。
 - 另有科研圆桌、命令行和可选 DSH 插件入口。
@@ -26,20 +27,49 @@ FOUNDRY_MOCK=1 FOUNDRY_HOME="$(mktemp -d)" npm start
 
 打开总控协作页面，创建一个示例会话并发送问题。mock 输出只验证流程，不代表真实模型能力。
 
-真实调用前，在 shell 中显式配置凭据和你有权使用的模型 ID：
+真实调用可以先用默认的「总控 + 一个执行者」配置。在 shell 中分别指定两条线路的兼容端点、模型 ID 和密钥：
 
 ```bash
-export DEEPSEEK_API_KEY='YOUR_DEEPSEEK_KEY'
-export DEEPSEEK_MODEL='YOUR_DEEPSEEK_MODEL_ID'
-export ANTHROPIC_API_KEY='YOUR_ANTHROPIC_KEY'
-export ANTHROPIC_MODEL='YOUR_ANTHROPIC_MODEL_ID'
-export CODEX_BIN=codex
+export FOUNDRY_CONTROLLER_BASE_URL='http://localhost:1234/v1'
+export FOUNDRY_CONTROLLER_MODEL='YOUR_MODEL_ID'
+export FOUNDRY_WORKER_BASE_URL='http://localhost:1234/v1'
+export FOUNDRY_WORKER_MODEL='YOUR_MODEL_ID'
+# 需要认证的服务再设置 FOUNDRY_CONTROLLER_API_KEY / FOUNDRY_WORKER_API_KEY
 npm start
 ```
 
 `.env.example` 是字段说明，程序不会自动加载它。不要把真实密钥写进仓库。API、订阅和探针调用可能产生费用或消耗额度；自动续航和多轮评审会增加调用量，首次使用请保持自动续航关闭。
 
-默认配置与数据位于 `~/.dsh/research-foundry/`。可用 `FOUNDRY_HOME` 指定一个新的私有目录。`config.json` 可覆盖 lanes 的 `baseUrl`、`model`、`bin` 等配置，环境变量中的密钥仅在运行时使用，不自动写回配置。默认 HTTP 端点为 DeepSeek 官方端点及 Anthropic 官方端点；模型 ID 不预设。
+默认配置与数据位于 `~/.dsh/research-foundry/`。可用 `FOUNDRY_HOME` 指定一个新的私有目录。默认不预设服务商端点或模型 ID。环境变量中的密钥仅在运行时使用，不自动写回配置。
+
+## 自定义模型、数量和角色
+
+将 [示例配置](examples/config.example.json) 复制到运行目录的 `config.json`，修改后重启服务。`lanes` 是完整参与者名单，替换默认示例，不会隐式添加额外模型。每条线路的 ID 可自定义；总控协作需要至少一个总控和一个执行者，圆桌模式可使用单条或多条线路。
+
+```json
+{
+  "lanes": {
+    "planner": { "kind": "openai", "label": "规划模型", "baseUrl": "http://localhost:1234/v1", "model": "YOUR_MODEL_ID", "apiKeyEnv": "PLANNER_API_KEY" },
+    "solver": { "kind": "openai", "label": "实现模型", "baseUrl": "http://localhost:1234/v1", "model": "YOUR_MODEL_ID", "apiKeyEnv": "SOLVER_API_KEY" }
+  },
+  "protocol": { "controller": "planner", "workers": ["solver"], "reviewers": ["planner", "solver"], "reviewRounds": 2, "reviewPassRatio": 0.8 }
+}
+```
+
+可按需要增加执行者，也可为不同角色使用同一端点和模型。网页会按配置生成参与者、执行者选项、评审网格和用量面板。
+
+| `kind` | 接口 | 配置要点 |
+|---|---|---|
+| `openai` | Chat Completions 兼容接口 | `baseUrl` 填接口前缀（例如以 `/v1` 结尾），程序追加 `/chat/completions`；支持无需密钥的本地服务 |
+| `anthropic` | Anthropic Messages 兼容接口 | `baseUrl` 填服务根地址，程序追加 `/v1/messages`；配置 `apiKeyEnv` |
+| `codex` | 本机 Codex CLI | 配置 `bin`、可选 `model` 和 `reasoning`；需本机登录及兼容的 CLI 版本 |
+| `deepseek` | 旧版专用适配器 | 保留旧配置兼容；新配置也可选择通用 `openai` 兼容方式 |
+
+每条线路可设置 `apiKeyEnv`、`modelEnv`、`baseUrlEnv`、`binEnv`，引用自己选择的环境变量；`strengths` 可描述执行者的任务专长。支持范围由接口协议决定：只提供其他专有协议或 Responses 接口的服务需要新增适配器，不能仅改模型名。
+
+`protocol.controller` 选择总控（旧字段 `lead` 仍兼容）；未指定时优先选 `role: "controller"`，否则选第一条启用线路。执行者默认是其他所有启用线路；评审者默认是所有启用线路。每位评审者的轮数与通过比例可调整，门槛为 `ceil(评审人数 × 轮数 × 比例)`。失败或不完整的评审不会算通过。评审缓存同时绑定贡献内容、评审模型/端点、轮数、门槛与规则，换配置后不会误用旧结果。
+
+旧配置中明确列出的 `deepseek` / `claude` / `chatgpt` ID 及原环境变量保持兼容。已有会话保留原线路 ID；更换名单后请新建会话或保留旧 ID，避免恢复旧任务时找不到参与者。
 
 ```bash
 node lib/cli.mjs init             # 写入默认配置；已有配置时请勿运行
@@ -64,7 +94,7 @@ npm run check:privacy
 FOUNDRY_MOCK=1 FOUNDRY_HOME="$(mktemp -d)" npm run mock
 ```
 
-自动测试覆盖凭据不落盘、默认知识源隔离、无账户自动发现、总控 mock 流程和会话恢复。隐私扫描只报告文件名与规则，不打印疑似凭据；它是启发式检查，仍需人工复核将要发布的文件。
+自动测试覆盖凭据不落盘、默认知识源隔离、无账户自动发现、2/3/4 个自定义参与者的总控 mock 流程、分歧终裁、动态评审与缓存隔离、通用接口请求和会话恢复。隐私扫描只报告文件名与规则，不打印疑似凭据；它是启发式检查，仍需人工复核将要发布的文件。
 
 ## 结构
 
