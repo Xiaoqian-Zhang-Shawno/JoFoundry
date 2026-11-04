@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>人机审稿 · 论文初稿</title>
+  <link rel="stylesheet" href="./app.css" />
+  <link rel="stylesheet" href="./command.css" />
+  <style>
+    .rv-main { display: grid; grid-template-columns: 260px minmax(520px, 1fr) 420px; height: calc(100vh - 63px); }
+    .rv-toc { padding: 14px; overflow: auto; border-right: 1px solid var(--line); }
+    .rv-toc li { cursor: pointer; padding: 5px 8px; border-radius: 6px; font-size: 13px; list-style: none; }
+    .rv-toc li:hover, .rv-toc li.active { background: var(--panel-2); }
+    .rv-toc .bad { color: var(--danger); font-size: 11px; }
+    .rv-paper { overflow: auto; padding: 18px 26px 80px; }
+    .rv-paper .pane { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .rv-paper .col h4 { color: var(--dim); font-size: 12px; margin: 0 0 6px; }
+    .rv-paper .body { white-space: normal; font-size: 13.5px; line-height: 1.75; }
+    .rv-paper .body p { margin: 6px 0; }
+    .rv-paper .meta { font-size: 11.5px; color: var(--dim); margin: 4px 0 12px; }
+    .rv-side { border-left: 1px solid var(--line); overflow: auto; padding: 14px; }
+    .cmt { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; background: var(--panel); font-size: 12.5px; }
+    .cmt .q { color: var(--dim); border-left: 3px solid #33507f; padding-left: 8px; margin: 4px 0; }
+    .cmt .st { font-size: 10.5px; padding: 0 6px; border-radius: 999px; border: 1px solid var(--line); }
+    .cmt .thread { margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--line); }
+    .missing { background: rgba(229,83,75,.18); border-bottom: 1px dashed var(--danger); }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="logo">✎</span><div><h1>人机审稿</h1><p class="sub">三模型中英双份初稿 · 你提意见 · 模型讨论并相互说服 · 总控 决断：改稿 / 补实验 / 带证据回复</p></div></div>
+    <div class="lanes"><select id="sess" style="max-width:420px"></select></div>
+    <div class="top-actions">
+      <button id="draftBtn" class="primary">生成 / 重写初稿</button>
+      <a class="navlink" href="./command">← 总控协作</a>
+    </div>
+  </header>
+  <main class="rv-main">
+    <aside class="rv-toc"><h2 class="dim" style="font-size:12px">目录</h2><ul id="toc" style="padding:0"></ul><p class="dim tiny" id="pmeta"></p></aside>
+    <section class="rv-paper" id="paper"><p class="dim">选择会话。还没有初稿时点右上角「生成初稿」。</p></section>
+    <aside class="rv-side">
+      <div class="card">
+        <h2>提意见</h2>
+        <p class="dim tiny">在正文里选中一句话再写意见，会自动带上引用。也可以只写整节意见。</p>
+        <label>所在节 <select id="cSec"></select></label>
+        <label>引用 <textarea id="cQuote" rows="2" placeholder="选中正文自动填入"></textarea></label>
+        <label>意见 <textarea id="cText" rows="4" placeholder="例：这里的提升是单 seed 结果，主张写得太满"></textarea></label>
+        <button id="cAdd" class="ghost wide">添加意见</button>
+        <button id="cResolve" class="primary wide">让三个模型处理全部未决意见</button>
+      </div>
+      <div id="cmts"></div>
+      <div class="card"><h2>过程</h2><div class="events" id="plog"></div></div>
+    </aside>
+  </main>
+  <div id="toast" class="toast"></div>
+  <script src="./review.js"></script>
+</body>
+</html>

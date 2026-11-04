@@ -40,3 +40,7 @@ Validation: eight offline regression tests, including 2/3/4 participants and cus
 The source installation's subsequent UI update was merged by a three-way comparison against the initial source export: collapsible rounds, older-round grouping, process visibility, latest-round controls and follow-latest behavior are retained alongside the configurable roster. Source installation files remain untouched.
 
 Browser verification also reproduced and fixed a lazy-history issue: opening an older-round group in an idle session left it empty because no polling redraw occurred. The group now renders its children immediately; detached toggle events are ignored.
+
+## 0.3.0 — 成稿与人工审稿
+
+从本地新版移植分节成稿、人工批注与修订、消息排队及会话目标。成稿只使用当前会话的材料和证据。供应商切换使用显式配置，凭据按供应商从环境变量取用。公开版继续采用可配置角色和只读 Codex 执行方式。

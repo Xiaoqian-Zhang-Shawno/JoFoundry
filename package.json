@@ -1,6 +1,6 @@
 {
   "name": "research-foundry",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Local multi-model research collaboration with a controller, workers, review and persistent memory",
   "private": true,
   "type": "module",

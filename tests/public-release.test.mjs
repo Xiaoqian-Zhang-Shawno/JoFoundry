@@ -144,3 +144,32 @@ test('generic HTTP adapter uses custom endpoint/model and allows keyless local e
     assert.equal(observed.headers.authorization, undefined)
   } finally { globalThis.fetch = oldFetch }
 })
+
+test('provider failover isolates keys and keeps response bodies out of diagnostics', async () => {
+  const { callLane, providerStatus } = await import('../lib/engine/lanes.mjs')
+  const originalFetch = globalThis.fetch
+  const seen = []
+  process.env.FOUNDRY_TEST_PROVIDER_ONE = 'fixture-one'
+  process.env.FOUNDRY_TEST_PROVIDER_TWO = 'fixture-two'
+  globalThis.fetch = async (url, { headers }) => {
+    seen.push([new URL(url).hostname, headers.authorization])
+    if (seen.length === 1) return new Response('private-response-body', { status: 503 })
+    return Response.json({ choices: [{ message: { content: 'fallback answer' } }] })
+  }
+  const cfg = { lanes: { lead: { kind: 'openai', model: 'fixture-model', providers: [
+    { id: 'one', baseUrl: 'https://one.example.invalid/v1', apiKeyEnv: 'FOUNDRY_TEST_PROVIDER_ONE' },
+    { id: 'two', baseUrl: 'https://two.example.invalid/v1', apiKeyEnv: 'FOUNDRY_TEST_PROVIDER_TWO' },
+  ] } }, protocol: { retries: 0 } }
+  try {
+    const result = await callLane('lead', cfg, { system: 'role', user: 'task' })
+    assert.equal(result.provider, 'two')
+    assert.deepEqual(seen, [['one.example.invalid', 'Bearer fixture-one'], ['two.example.invalid', 'Bearer fixture-two']])
+    assert.equal(providerStatus('lead').one.ok, false)
+    assert.equal(providerStatus('lead').two.ok, true)
+    assert.ok(!JSON.stringify(providerStatus('lead')).includes('private-response-body'))
+  } finally {
+    globalThis.fetch = originalFetch
+    delete process.env.FOUNDRY_TEST_PROVIDER_ONE
+    delete process.env.FOUNDRY_TEST_PROVIDER_TWO
+  }
+})

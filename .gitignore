@@ -3,6 +3,7 @@ node_modules/
 .env.*
 !.env.example
 config.json
+credentials/
 .dsh/
 .research-foundry/
 vault/

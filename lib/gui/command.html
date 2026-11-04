@@ -18,6 +18,8 @@
     </div>
     <div class="lanes" id="lanes"></div>
     <div class="top-actions">
+      <label class="tiny dim" hidden>总控供应商 <select id="provSel"></select></label>
+      <a class="navlink" href="./review">人机审稿 →</a>
       <a class="navlink" href="./">← 多模型圆桌</a>
     </div>
   </header>
@@ -40,6 +42,7 @@
         <label>领域 <input id="field" placeholder="如 计算机视觉" /></label>
         <label>资源约束 <input id="constraints" placeholder="如 4×A100、单人、2 个月" /></label>
         <label>研究背景 / 当前进展 <textarea id="background" rows="4" placeholder="问题、方法、已有结果……"></textarea></label>
+        <label>本会话科研目标（可选，覆盖全局）<textarea id="sessMission" rows="2" placeholder="例：核对主张与已有实验的对应关系"></textarea></label>
         <label>本地材料路径（每行一个，家目录内文本文件，如 .md/.py/.tex）
           <textarea id="materials" rows="3" placeholder="/path/to/approved-materials.md"></textarea>
         </label>

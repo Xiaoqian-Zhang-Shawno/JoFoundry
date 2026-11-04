@@ -78,6 +78,12 @@ node lib/cli.mjs run --topic "示例研究问题" --mode paper
 node lib/cli.mjs list
 ```
 
+## 成稿、人工审稿与供应商切换
+
+总控页的「人机审稿」可按当前会话生成分节的中英初稿，标出未在会话材料中找到的数字，并对指定段落添加审稿意见。数字匹配只能提示回查，仍需核对数字的来源和含义。补实验的建议可排入下一回合，生成实验方案供用户核验。
+
+可为一条线路设置 `providers` 数组。每项填写唯一的 `id`、`kind`（`openai` 或 `anthropic`）、`baseUrl`、`model`，需要认证时填写 `apiKeyEnv`（环境变量名称）。配置中的 `active` 指定默认首选。总控页的切换在当前进程生效，重启后回到配置文件中的首选。遇到可重试的错误时，提示词可发给该线路的其他启用供应商，请只配置允许处理同一批材料的服务。
+
 ## 材料、技能和记忆
 
 公开版默认不读取个人 AGENTS.md、Codex 会话日志、其他应用登录态或任何已有 Obsidian 项目。知识源通过 `config.json` 的 `knowledge.extraSources` 显式指定；技能目录通过 `FOUNDRY_SKILLS_DIR` 显式指定，默认是运行目录下的空 skills 目录。`knowledge.deepSkills` 可列出允许精读的技能名称。
