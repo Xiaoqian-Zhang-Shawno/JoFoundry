@@ -1,5 +1,7 @@
 # JoFoundry
 
+![JoFoundry manga cover with three investigators reviewing evidence at a workbench](assets/readme/hero.webp)
+
 [简体中文](README.md) · **English**
 
 **A research workspace that keeps the question, evidence, decision, and next step together.**
@@ -12,6 +14,13 @@ JoFoundry is a locally hosted workspace for research with multiple AI models. Yo
 
 When a study spans several chats, it is easy to lose track of who checked a claim, which source they used, and what would change the decision. JoFoundry keeps reports, disagreements, rulings, and next triggers in the original project and round.
 
+![Research question and criteria → project assignments → parallel reports and cross-review → ruling and evidence record → next decision or bilingual draft review.](assets/readme/workflow-en.webp)
+
+[Editable source (draw.io)](assets/readme/workflow-en.drawio)
+
+<details>
+<summary>Expand the Mermaid diagram</summary>
+
 ```mermaid
 flowchart LR
     Q["Question and acceptance criteria"] --> P["Project and assignments"]
@@ -20,6 +29,8 @@ flowchart LR
     D --> N["Advance, revise, reject, or wait"]
     D --> W["Bilingual draft and passage review"]
 ```
+
+</details>
 
 | Feature | What you can see or control |
 | --- | --- |

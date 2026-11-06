@@ -1,5 +1,7 @@
 # JoFoundry
 
+![JoFoundry 漫画封面，三名研究者在工作台前复核证据](assets/readme/hero.webp)
+
 **简体中文** · [English](README.en.md)
 
 **把研究问题、证据、裁决和下一步留在同一个工作台。**
@@ -12,6 +14,13 @@ JoFoundry 是一个本地托管的多模型科研工作台。你设定问题和�
 
 在多条聊天中推进同一课题时，最容易丢的是证据与结论之间的联系。JoFoundry 把报告、分歧、裁决和后续条件记录到原项目与原回合，让负责人知道现在哪一步可以继续。
 
+![问题与验收条件 → 项目内分工 → 并行报告与交叉质疑 → 裁决与证据记录 → 后续决定或中英文稿件审阅。](assets/readme/workflow-zh.webp)
+
+[可编辑源图（draw.io）](assets/readme/workflow-zh.drawio)
+
+<details>
+<summary>展开 Mermaid 流程图</summary>
+
 ```mermaid
 flowchart LR
     Q["问题与验收条件"] --> P["项目内分工"]
@@ -20,6 +29,8 @@ flowchart LR
     D --> N["推进、修订、淘汰或等待"]
     D --> W["中英文稿件与逐段审阅"]
 ```
+
+</details>
 
 | 功能 | 你能看到或控制什么 |
 | --- | --- |
