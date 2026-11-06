@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 425 35" width="425" height="35" role="img">
+<path d="M8 2H147L139 28H0Z" fill="#FF787C"/>
+<path d="M3 32H139" stroke="#FF787C" stroke-width="2"/>
+<text x="73.5" y="19" fill="#29234E" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" letter-spacing=".6">LOCAL WORKSPACE</text>
+<path d="M163 2H302L294 28H155Z" fill="#29234E"/>
+<path d="M158 32H294" stroke="#FF787C" stroke-width="2"/>
+<text x="228.5" y="19" fill="#FFFFFF" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" letter-spacing=".6">EVIDENCE REVIEW</text>
+<path d="M318 2H425L417 28H310Z" fill="#29234E"/>
+<path d="M313 32H417" stroke="#FF787C" stroke-width="2"/>
+<text x="367.5" y="19" fill="#FFFFFF" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" letter-spacing=".6">NODE.JS 22+</text>
+</svg>
