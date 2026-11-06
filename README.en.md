@@ -30,7 +30,16 @@ flowchart LR
 | **Bilingual manuscript review** | Generate sectioned English and Chinese drafts, flag numbers without a match in session materials, and track comments on specific passages. |
 | **Configurable providers** | Use compatible local or remote APIs or the Codex CLI. Configure preferred providers, fallback, and optional quota lookups. |
 
-**The reproducible outcome is a traceable workflow.** Follow a synthetic benchmark question from assignment to report and ruling, then inspect the saved record. Tests cover session recovery, routing, and manuscript review. Research quality, empirical outcomes, and API cost depend on the study and model setup. [Tests](tests/) · [Release scope](docs/PUBLIC_RELEASE.md)
+### Verified workflow behavior
+
+Both modes received the same scripted decision while evidence was missing. In this controlled replay, **standard mode opened 1 automatic follow-up round and evidence-first mode opened 0**. The waiting session retained its objective, decision, and next trigger after restart. A wrong-project submission returned HTTP 409 and left the rounds and pending queue intact. Evidence from the matching project opened T2 in the original session.
+
+```bash
+node scripts/validate-evidence-handoff.mjs
+npm test
+```
+
+The replay uses synthetic inputs and local HTTP, with zero external model calls. The 14 offline regression tests also cover recovery, provider routing, and number-trace hints in bilingual drafts. The replay measures workflow behavior in a specified scenario. Researcher time, scientific quality, and model performance await controlled evaluation. [Results and reproduction](docs/EVALUATION.md) · [Regression tests](tests/) · [Release scope](docs/PUBLIC_RELEASE.md)
 
 ## Quickstart
 
