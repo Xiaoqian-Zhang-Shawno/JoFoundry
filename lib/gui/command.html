@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>总控协作 · CCF-A 作战室</title>
+  <title>JoFoundry · 总控协作</title>
   <link rel="stylesheet" href="./app.css" />
   <link rel="stylesheet" href="./command.css" />
 </head>
@@ -36,6 +36,9 @@
         <h2>研究背景（新建会话时生效）</h2>
         <label>所属项目 <select id="newSessionProject"></select></label>
         <label>会话标题 <input id="title" placeholder="如 算法比较 · 实验设计" /></label>
+        <label>协作流程
+          <select id="workflow"><option value="standard">标准协作</option><option value="evidence">证据优先</option></select>
+        </label>
         <div class="row2">
           <label>目标会议 <select id="venue"></select></label>
           <label>截止 <input id="deadline" placeholder="2027-01-xx" /></label>

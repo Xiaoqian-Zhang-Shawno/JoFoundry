@@ -1,12 +1,13 @@
 {
-  "name": "research-foundry",
-  "version": "0.4.0",
-  "description": "Local multi-model research collaboration with a controller, workers, review and persistent memory",
+  "name": "jofoundry",
+  "version": "0.5.0",
+  "description": "Local multi-model research workspace for staged evidence review, resumable goals, and bilingual manuscripts",
   "private": true,
   "type": "module",
   "main": "./lib/index.js",
   "bin": {
-    "foundry": "./lib/cli.mjs"
+    "foundry": "./lib/cli.mjs",
+    "jofoundry": "./lib/cli.mjs"
   },
   "files": [
     "lib"
@@ -26,7 +27,7 @@
   "dsh": {
     "plugin": {
       "id": "research-foundry",
-      "displayName": "科研灵感工坊",
+      "displayName": "JoFoundry",
       "description": "可配置模型与角色的科研协作：派工、互审、综合与长期记忆"
     }
   },

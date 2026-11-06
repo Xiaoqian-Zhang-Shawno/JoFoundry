@@ -1,4 +1,4 @@
-dsh-research-foundry — 多模型科研灵感工坊
+JoFoundry — 多模型科研工作台
 
 用法：
   node lib/cli.mjs init                      写入默认配置

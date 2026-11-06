@@ -2,7 +2,7 @@ import test, { after } from 'node:test'
 import assert from 'node:assert/strict'
 import { once } from 'node:events'
 import { createServer } from 'node:http'
-import { mkdtempSync, rmSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { setTimeout as sleep } from 'node:timers/promises'
@@ -96,6 +96,68 @@ test('saved retry time resumes a failed goal after reload', async () => {
   await waitFor(() => restored.autopilot.state === 'complete')
   assert.equal(restored.turns.length, 2)
   assert.equal(restored.turns[1].user, original.user)
+})
+
+test('evidence wait survives restart and a matching idle-only delivery resumes the original session', async () => {
+  const cfg = await initCommand({})
+  const server = createServer((req, res) => handle(req, res, {}).catch(() => res.writeHead(500).end()))
+  server.listen(0, '127.0.0.1')
+  await once(server, 'listening')
+  const base = `http://127.0.0.1:${server.address().port}${ROUTE}/api/cmd/`
+  async function post(path, body, status = 200) {
+    const response = await fetch(base + path, {
+      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body),
+    })
+    assert.equal(response.status, status)
+    return response.json()
+  }
+  try {
+    const { project } = await post('projects', { name: 'Evidence fixture' })
+    const { project: other } = await post('projects', { name: 'Other fixture' })
+    const { session: created } = await post('session', {
+      title: 'One experiment', projectId: project.id, workflow: 'evidence', mission: 'Reproduce the finding',
+    })
+    const { id } = created
+    await post('message', { id, projectId: other.id, message: 'Wrong route' }, 409)
+    await post('message', { id, projectId: project.id, message: 'Establish the next check', oral: false, autopilot: true })
+    const wait = () => {
+      const s = cmd.sessions.get(id)
+      return s.status === 'idle' && s.autopilot.state === 'waiting' && s
+    }
+    const first = await waitFor(wait)
+    assert.equal(first.turns.length, 1)
+    assert.deepEqual(first.turns[0].next.evidenceReview, {
+      stage: 'minimal_check', disposition: 'wait', evidence: [], nextTrigger: '由执行者交付可复现记录',
+    })
+    assert.match(readFileSync(join(cfg.vault, 'sessions', id, 'transcript.md'), 'utf8'), /下一触发：由执行者交付可复现记录/)
+    assert.equal(first.autopilot.enabled, true)
+    assert.equal(first.autopilot.objective, 'Reproduce the finding')
+
+    cmd.sessions.delete(id)
+    cmd.loadSessions(cfg.vault)
+    cmd.resumeInterrupted(cfg)
+    const restored = await waitFor(wait)
+    assert.equal(restored.autopilot.retryAt, undefined)
+    assert.equal(restored.turns.length, 1)
+
+    const payload = { id, projectId: project.id, message: 'Evidence artifact delivered', idleOnly: true }
+    await post('queue', { ...payload, projectId: other.id }, 409)
+    restored.status = 'running'
+    await post('session/project', { id, projectId: other.id }, 409)
+    await post('queue', payload, 409)
+    assert.equal(restored.pending, undefined)
+    restored.status = 'idle'
+
+    const accepted = await post('queue', payload)
+    assert.equal(accepted.started, true)
+    assert.equal(accepted.turn.id, 'T2')
+    const resumed = await waitFor(wait)
+    assert.equal(resumed.turns[1].user, payload.message)
+    assert.equal(resumed.projectId, project.id)
+    assert.equal(resumed.autopilot.objective, first.autopilot.objective)
+  } finally {
+    await new Promise(resolve => server.close(resolve))
+  }
 })
 
 test('quota uses only the opted-in active provider key and keeps balances out of model context', async () => {
