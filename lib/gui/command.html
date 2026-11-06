@@ -27,13 +27,14 @@
   <main class="cmd-main">
     <aside class="left">
       <div class="card">
-        <h2>会话</h2>
+        <h2 class="project-heading">项目与会话 <button id="newProject" type="button" class="ghost mini">＋ 项目</button></h2>
         <button id="newBtn" class="primary wide">＋ 新建会话</button>
-        <ul id="sessionList" class="runlist"></ul>
+        <div id="sessionList"></div>
       </div>
 
       <form id="ctxForm" class="card">
         <h2>研究背景（新建会话时生效）</h2>
+        <label>所属项目 <select id="newSessionProject"></select></label>
         <label>会话标题 <input id="title" placeholder="如 算法比较 · 实验设计" /></label>
         <div class="row2">
           <label>目标会议 <select id="venue"></select></label>
@@ -54,13 +55,14 @@
         <label class="inline"><input type="checkbox" id="cross" checked /> 空闲时互审</label>
         <label class="inline"><input type="checkbox" id="debate" checked /> 分歧相互说服（证据可查证，主持人终裁）</label>
         <label class="inline"><input type="checkbox" id="oral" checked /> 贡献评审（按配置的模型、轮数与比例）</label>
-        <label class="inline"><input type="checkbox" id="autopilot" /> 自动续航（总控自己决定下一回合）</label>
+        <label class="inline"><input type="checkbox" id="autopilot" /> 发送后继续推进当前目标</label>
         <label>每人任务步数 <select id="maxSteps"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>6</option></select></label>
-        <p class="dim tiny">自动续航不设回合上限：每回合结束由主持人 对照论文完整度判断继续 / 收敛 / 完成 / 需要你。</p>
+        <p class="dim tiny">主持人每回合核对目标的完成条件，并派发下一步。需要你处理的卡点会显示在这里。</p>
         <label>每个任务最多打回 <select id="maxRevise"><option value="0">0</option><option value="1" selected>1</option><option value="2">2</option></select></label>
         <p class="dim tiny">流水线：执行者做完就上交、立即取下一个任务；没任务时去互审对方。总控随到随裁，裁决与常设指令写进公告板，所有 Agent 都会读到。</p>
-        <p class="dim tiny" id="apNote"></p>
-        <button type="button" id="apToggle" class="ghost wide">开启自动续航</button>
+        <p class="tiny" id="apObjective"></p>
+        <p class="dim tiny" id="apNote" aria-live="polite"></p>
+        <button type="button" id="apToggle" class="ghost wide">设置或恢复续航目标</button>
       </div>
 
       <div class="card">
@@ -80,10 +82,16 @@
         <div>
           <h2 id="sessionTitle">选择或新建一个会话</h2>
           <p id="sessionMeta" class="sub"></p>
+          <label class="inline tiny" id="moveProjectLabel" hidden>所属项目 <select id="moveProject" aria-label="移动会话到项目"></select></label>
           <div id="ccfaBar" class="ccfa"></div>
         </div>
         <div class="phase-steps" id="phaseSteps"></div>
       </div>
+      <details id="ccfaHistory" class="ccfa-history" hidden>
+        <summary>CCF-A 进度趋势 <span id="ccfaCount"></span></summary>
+        <div id="ccfaPlot"></div>
+        <p id="ccfaEvent" class="ccfa-event" aria-live="polite"></p>
+      </details>
       <div class="feed-tools">
         <button type="button" id="fdLatest" class="ghost mini2">只看最新回合</button>
         <button type="button" id="fdCollapse" class="ghost mini2">全部折叠</button>

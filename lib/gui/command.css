@@ -76,7 +76,7 @@ label.inline input { width: auto; margin: 0; }
 .usage-lane .ulabel { display: flex; justify-content: space-between; color: var(--dim); font-size: 11px; }
 .usage-lane .uerr { color: var(--danger); font-size: 11px; }
 
-.ccfa { margin-top: 6px; min-width: 320px; }
+.ccfa { margin-top: 6px; min-width: 0; }
 .ccfa .meter { height: 8px; }
 .ccfa .ulabel b { color: var(--text); }
 .ccfa-mini { height: 4px; border-radius: 2px; background: var(--panel-2); overflow: hidden; margin-top: 4px; }
@@ -113,3 +113,28 @@ label.inline input { width: auto; margin: 0; }
 .turnblock .user-msg::after { content: '点击展开全文'; position: absolute; right: 8px; bottom: 4px; font-size: 10.5px; color: var(--accent); background: #1a2a48; padding: 0 4px; }
 .turnblock .user-msg.full { max-height: none; }
 .turnblock .user-msg.full::after { content: none; }
+
+.project-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.project-group { margin-top: 10px; border-top: 1px solid var(--line); }
+.project-group > summary { padding: 8px 2px 3px; cursor: pointer; }
+.project-group > summary .tiny { float: right; }
+.runlist .session-link {
+  display: block; width: 100%; border: 0; padding: 0; background: transparent;
+  color: inherit; text-align: left; font: inherit; cursor: pointer;
+}
+#moveProjectLabel[hidden] { display: none; }
+#moveProject { width: auto; max-width: 100%; padding: 2px 6px; }
+#apObjective { overflow-wrap: anywhere; white-space: pre-wrap; }
+.ccfa-history { padding: 6px 16px; border-bottom: 1px solid var(--line); }
+.ccfa-history summary { cursor: pointer; font-size: 13px; }
+#ccfaCount { margin-left: 8px; color: var(--muted); font-size: 11px; }
+#ccfaPlot svg {
+  display: block; width: 100%; max-height: 145px; margin-top: 6px;
+  background: #f7fafc; border-radius: 5px; cursor: crosshair;
+}
+#ccfaPlot svg line { stroke: #dadde3; }
+#ccfaPlot svg text { fill: #334155; font-size: 11px; }
+#ccfaPlot svg polyline { fill: none; stroke: #5878a6; stroke-width: 2.4; stroke-linejoin: round; }
+#ccfaPlot .ccfa-cursor { fill: #f4a7ae; stroke: #334155; stroke-width: 1.5; }
+#ccfaPlot input { flex: 1; min-width: 0; }
+.ccfa-event { margin: 2px 0 0; font-size: 12px; color: var(--text); max-height: 4.5em; overflow: auto; }
