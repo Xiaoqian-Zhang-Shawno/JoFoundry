@@ -10,7 +10,7 @@
 
 JoFoundry is a locally hosted workspace for research with multiple AI models. You define the question and acceptance criteria. A controller assigns work and adjudicates findings. Workers inspect evidence, look for counterexamples, and challenge each other's reports. Pick up the study from saved state and carry reviewed evidence into English and Chinese drafts.
 
-[Quickstart](#quickstart) · [Features and outcomes](#features-and-outcomes) · [Session walkthrough](#session-walkthrough) · [Connect models](#connect-models) · [Changelog](CHANGELOG.md) · [MIT](LICENSE)
+[Quickstart](#quickstart) · [Features and outcomes](#features-and-outcomes) · [Session walkthrough](#session-walkthrough) · [Connect models](#connect-models) · [Changelog](CHANGELOG.md) · [Licensing](LICENSE.md)
 
 ## Quickstart
 
@@ -130,3 +130,7 @@ FOUNDRY_MOCK=1 FOUNDRY_HOME="$(mktemp -d)" npm run mock
 [Engine](lib/engine/) · [Web UI](lib/gui/) · [CLI help](lib/CLI_HELP.txt)
 
 The evidence workflow draws inspiration from the research iteration and review described in [ScientistTwo](https://arxiv.org/abs/2609.19644). Researchers make the final decisions in JoFoundry.
+
+## Licensing
+
+New original material is no longer licensed under MIT by default. Existing MIT permissions remain valid. See [licensing status](LICENSE.md) and the preserved [MIT notice](licenses/MIT-legacy.txt). Third-party and contributor licenses and agreements remain applicable.

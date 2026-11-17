@@ -12,7 +12,7 @@
   "files": [
     "lib"
   ],
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "probe": "node lib/cli.mjs probe",
     "mock": "FOUNDRY_MOCK=1 node lib/cli.mjs run --topic \"测试主题\"",
